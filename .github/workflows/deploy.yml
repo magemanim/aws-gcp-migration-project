@@ -1,0 +1,38 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/694987318921/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+          service_account: github-cloudrun-sa@aws-gcp-migration-project.iam.gserviceaccount.com
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: aws-gcp-migration-project
+
+      - name: Build and Deploy to Cloud Run
+        run: |
+          gcloud builds submit --tag asia-south1-docker.pkg.dev/aws-gcp-migration-project/cloudrun-repo/aws-gcp-migration
+          gcloud run deploy aws-gcp-migration \
+            --image asia-south1-docker.pkg.dev/aws-gcp-migration-project/cloudrun-repo/aws-gcp-migration \
+            --region asia-south1 \
+            --platform managed \
+            --allow-unauthenticated
