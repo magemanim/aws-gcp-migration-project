@@ -1,13 +1,13 @@
-# Build stage
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
-COPY . .
-RUN dotnet publish -c Release -o /app/publish
- 
-# Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
+FROM python:3.11-slim
+
 WORKDIR /app
-COPY --from=build /app/publish .
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
 EXPOSE 8080
-ENV ASPNETCORE_URLS=http://0.0.0.0:8080
-ENTRYPOINT ["dotnet", "aws-gcp-migration.dll"]
+
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
