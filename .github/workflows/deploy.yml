@@ -16,7 +16,7 @@ jobs:
     environment: alpha
 
     env:
-      PROJECT_ID: aws-gcp-migration-project
+      PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
       REGION: ${{ vars.GCP_REGION }}
       REPOSITORY: sample-repo
       IMAGE: sample-app
@@ -40,6 +40,12 @@ jobs:
       - name: Set GCP Project
         run: |
           gcloud config set project $PROJECT_ID
+
+      - name: Enable Required APIs
+        run: |
+          gcloud services enable run.googleapis.com
+          gcloud services enable artifactregistry.googleapis.com
+          gcloud services enable storage.googleapis.com
 
       - name: Configure Docker Authentication
         run: |
