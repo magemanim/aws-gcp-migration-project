@@ -4,21 +4,22 @@ on:
   push:
     branches:
       - main
-
+      - feature/devops
 permissions:
   contents: read
   id-token: write
 
-env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  REGION: ${{ secrets.GCP_REGION }}
-  REPOSITORY: sample-repo
-  IMAGE: sample-app
-  SERVICE: sample-cloudrun-service
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: alpha
+    env:
+      PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+      REGION: ${{ vars.GCP_REGION }}
+      REPOSITORY: sample-repo
+      IMAGE: sample-app
+      SERVICE: sample-cloudrun-service
+      GCS_BUCKET: ${{ vars.GCS_BUCKET }}
 
     steps:
 
@@ -53,7 +54,7 @@ jobs:
 
       - name: Upload Artifact to GCS
         run: |
-          gsutil cp artifacts/build.txt gs://${{ secrets.GCS_BUCKET }}/
+          gsutil cp artifacts/build.txt gs://$GCS_BUCKET/
 
       - name: Deploy to Cloud Run
         run: |
