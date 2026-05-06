@@ -41,7 +41,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$GITHUB_SHA ./app
+          docker build -t $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$GITHUB_SHA .
 
       - name: Push Docker Image
         run: |
