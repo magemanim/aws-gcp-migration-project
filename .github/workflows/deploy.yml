@@ -16,7 +16,7 @@ jobs:
     environment: alpha
 
     env:
-      PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+      PROJECT_ID: aws-gcp-migration-project
       REGION: ${{ vars.GCP_REGION }}
       REPOSITORY: sample-repo
       IMAGE: sample-app
